@@ -1,13 +1,11 @@
 # build folders
 bin/
 obj/
-Properties/
 
 # VS stuff
 .vs/
 *.user
 *.suo
-*.csproj
 
 # Packages folder and libraries
 packages/
