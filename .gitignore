@@ -1,0 +1,16 @@
+# build folders
+bin/
+obj/
+
+# VS stuff
+.vs/
+*.user
+*.suo
+
+# Packages folder and libraries
+packages/
+libraries/
+
+# Backup & temporary files
+*.log
+*.tmp

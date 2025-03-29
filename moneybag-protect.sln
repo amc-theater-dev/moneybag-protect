@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "moneybag-protect", "moneybag-protect.csproj", "{BD193C0C-6F85-4926-A22C-803A2FB18F8A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BD193C0C-6F85-4926-A22C-803A2FB18F8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD193C0C-6F85-4926-A22C-803A2FB18F8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD193C0C-6F85-4926-A22C-803A2FB18F8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD193C0C-6F85-4926-A22C-803A2FB18F8A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D887938B-5149-42CB-9CC7-3B2987EE839D}
+	EndGlobalSection
+EndGlobal
