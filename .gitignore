@@ -1,6 +1,7 @@
 # build folders
 bin/
 obj/
+Properties/
 
 # VS stuff
 .vs/
