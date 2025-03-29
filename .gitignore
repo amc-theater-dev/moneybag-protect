@@ -6,6 +6,7 @@ obj/
 .vs/
 *.user
 *.suo
+*.csproj
 
 # Packages folder and libraries
 packages/
