@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace MoneybagProtect
 {
-    [BepInPlugin("mod.moneybagprotect", "Moneybag Protect", "1.0.4")]
+    [BepInPlugin("mod.moneybagprotect", "Moneybag Protect", "1.0.5")]
     public class MoneybagProtect : BaseUnityPlugin
     {
         public static MoneybagProtect Instance { get; private set; }
@@ -81,8 +81,7 @@ namespace MoneybagProtect
                     }
                     else
                     {
-                        // reset the color to the original color and disable emission
-                        renderer.material.SetColor("_Color", originalColor);
+                        // disable emission
                         renderer.material.DisableKeyword("_EMISSION");
                     }
                 }
