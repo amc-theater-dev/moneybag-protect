@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace MoneybagProtect
 {
-    [BepInPlugin("mod.moneybagprotect", "Moneybag Protect", "1.0.1")]
+    [BepInPlugin("mod.moneybagprotect", "Moneybag Protect", "1.0.4")]
     public class MoneybagProtect : BaseUnityPlugin
     {
         public static MoneybagProtect Instance { get; private set; }
@@ -41,6 +41,55 @@ namespace MoneybagProtect
             else
             {
                 MoneybagProtect.LogInstance.LogError("Moneybag Protect: Couldn't locate 'indestructibleTimer' in SurplusValuable");
+            }
+        }
+    }
+
+    // patch to add a visual indicator based on the indestructibleTimer
+    [HarmonyPatch(typeof(SurplusValuable), "Update")]
+    public class SurplusValuableUpdatePatch
+    {
+        private static Color originalColor;
+        private static bool colorCaptured = false;
+
+        static void Postfix(SurplusValuable __instance)
+        {
+            // locate indestructibleTimer
+            FieldInfo timerField = typeof(SurplusValuable).GetField("indestructibleTimer", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (timerField != null)
+            {
+                // retrieve the current value
+                float currentTimer = (float)timerField.GetValue(__instance);
+
+                // locate the Renderer component in the object or children
+                Renderer renderer = __instance.GetComponentInChildren<Renderer>();
+                if (renderer != null)
+                {
+                    // capture the original color if not already captured
+                    if (!colorCaptured)
+                    {
+                        originalColor = renderer.material.GetColor("_Color");
+                        colorCaptured = true;
+                    }
+
+                    // conditional to make sure timer is active
+                    if (currentTimer > 0)
+                    {
+                        // set the color to a glowing cyan
+                        renderer.material.SetColor("_EmissionColor", Color.cyan * Mathf.LinearToGammaSpace(1.0f));
+                        renderer.material.EnableKeyword("_EMISSION");
+                    }
+                    else
+                    {
+                        // reset the color to the original color and disable emission
+                        renderer.material.SetColor("_Color", originalColor);
+                        renderer.material.DisableKeyword("_EMISSION");
+                    }
+                }
+                else
+                {
+                    MoneybagProtect.LogInstance.LogError("Moneybag Protect: Couldn't locate Renderer component in SurplusValuable or children");
+                }
             }
         }
     }
