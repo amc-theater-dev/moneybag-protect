@@ -1,6 +1,10 @@
 # changelog
 
-## [1.0.5] (2025-03-29)
+## [1.0.6] (2025-03-30)
+
+* further optimized and reduced unnecessary color capture due to switching to emission-only
+
+## [1.0.5] (2025-03-30)
 
 * fixed minor redundancy
 
