@@ -1,28 +1,56 @@
 ﻿using System.Reflection;
 using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using UnityEngine;
 
 namespace MoneybagProtect
 {
-    [BepInPlugin("mod.moneybagprotect", "Moneybag Protect", "1.0.6")]
+    [BepInPlugin("mod.moneybagprotect", "Moneybag Protect", "1.1.0")]
     public class MoneybagProtect : BaseUnityPlugin
     {
         public static MoneybagProtect Instance { get; private set; }
         public static ManualLogSource LogInstance { get; private set; }
         private readonly Harmony harmony = new Harmony("mod.moneybagprotect");
 
+        public ConfigEntry<float> CustomProtectTimer;
+        public ConfigEntry<string> CustomProtectColor;
+
         private void Awake()
         {
             Instance = this;
             LogInstance = Logger;
-            Logger.LogInfo("Moneybag Protect mod loaded");
+            CustomProtectTimer = Config.Bind("settings", "protection", 10f, "amount of time tax refund moneybag is protected after spawn");
+            CustomProtectColor = Config.Bind("settings", "protectionColor", "cyan", "color of the protection effect. possible values: red, green, cyan, yellow, magenta, white");
+            Logger.LogInfo("Moneybag Protect 1.1.0 loaded");
             harmony.PatchAll();
+        }
+
+        // assigns emission color based on user-selected config value, defaults to cyan
+        public Color GetColorFromConfig()
+        {
+            switch (CustomProtectColor.Value.ToLower())
+            {
+                case "red":
+                    return Color.red;
+                case "green":
+                    return Color.green;
+                case "cyan":
+                    return Color.cyan;
+                case "yellow":
+                    return Color.yellow;
+                case "magenta":
+                    return Color.magenta;
+                case "white":
+                    return Color.white;
+                default:
+                    return Color.cyan;
+            }
         }
     }
 
-    // patch to modify SurplusValuable.Start() to extend indestructibleTimer to 10 seconds and log the change
+    // patch to modify SurplusValuable.Start() to extend indestructibleTimer to the configured value and log the change
     [HarmonyPatch(typeof(SurplusValuable), "Start")]
     public class SurplusValuableStartPatch
     {
@@ -32,8 +60,10 @@ namespace MoneybagProtect
             FieldInfo timerField = typeof(SurplusValuable).GetField("indestructibleTimer", BindingFlags.NonPublic | BindingFlags.Instance);
             if (timerField != null)
             {
-                // set it to 10 seconds
-                timerField.SetValue(__instance, 10f);
+                // get the timer amount from the config
+                float timerAmount = MoneybagProtect.Instance.CustomProtectTimer.Value;
+                // set it to the field
+                timerField.SetValue(__instance, timerAmount);
                 // retrieve the updated value
                 float updatedTimer = (float)timerField.GetValue(__instance);
                 MoneybagProtect.LogInstance.LogInfo($"Moneybag Protect: indestructibleTimer changed to {updatedTimer} for SurplusValuable instance");
@@ -55,7 +85,7 @@ namespace MoneybagProtect
             FieldInfo timerField = typeof(SurplusValuable).GetField("indestructibleTimer", BindingFlags.NonPublic | BindingFlags.Instance);
             if (timerField == null)
             {
-                MoneybagProtect.LogInstance.LogError("Moneybag Protect: Couldn't locate 'indestructibleTimer' in SurplusValuable");
+                MoneybagProtect.LogInstance.LogError("Moneybag Protect: can't locate 'indestructibleTimer' in SurplusValuable");
                 return;
             }
 
@@ -66,14 +96,15 @@ namespace MoneybagProtect
             Renderer renderer = __instance.GetComponentInChildren<Renderer>();
             if (renderer == null)
             {
-                MoneybagProtect.LogInstance.LogError("Moneybag Protect: Couldn't locate Renderer component in SurplusValuable or its children");
+                MoneybagProtect.LogInstance.LogError("Moneybag Protect: can't locate Renderer component in SurplusValuable or its children");
                 return;
             }
 
             if (currentTimer > 0)
             {
-                // set a glowing cyan emission while invincibility is active
-                renderer.material.SetColor("_EmissionColor", Color.cyan * Mathf.LinearToGammaSpace(1.0f));
+                // set a glowing emission while invincibility is active
+                Color emissionColor = MoneybagProtect.Instance.GetColorFromConfig();
+                renderer.material.SetColor("_EmissionColor", emissionColor * Mathf.LinearToGammaSpace(1.0f));
                 renderer.material.EnableKeyword("_EMISSION");
             }
             else
@@ -84,3 +115,4 @@ namespace MoneybagProtect
         }
     }
 }
+

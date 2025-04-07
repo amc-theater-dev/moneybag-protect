@@ -2,9 +2,8 @@
 
 this mod extends the amount of time that your tax return moneybag is invincible after being dispensed
 
-by default it's invincible for 3 seconds - but this isn't enough to stop the bag from 'splodin after a long fall
+in the base game it's invincible for 3 seconds - but this isn't enough to stop the bag from 'splodin after a long fall. there's also a colored glow added, similar to how enemy souls glow when protected
 
-# todo
+invincibility length and the color of the glow are adjustable via the config file (`\REPO\BepInEx\config\mod.moneybagprotect.cfg`)
 
-- maybe eventually make the glow color user-adjustable idk
-- maybe eventually make the invincibility timer user-adjustable idk
+*inspired by an actual case of the tax return bag bouncing off the cart and falling into lava*
